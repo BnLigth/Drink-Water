@@ -9,7 +9,7 @@ jobs:
     name: iOS Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4       # BURASI GÜNCELLENDİ (v3 -> v4)
       
       - uses: subosito/flutter-action@v2
         with:
@@ -34,7 +34,8 @@ jobs:
         run: zip -r su_ic.ipa Payload
 
       - name: IPA'yı Yükle (Artifact)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # BURASI GÜNCELLENDİ (v3 -> v4)
         with:
           name: su-ic-ios-app
           path: su_ic.ipa
+          compression-level: 0 # İşlem daha hızlı olsun diye sıkıştırmayı kapattık
