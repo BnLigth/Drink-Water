@@ -1,0 +1,40 @@
+name: iOS IPA Oluştur
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_ios:
+    name: iOS Build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          
+      - name: Bağımlılıkları İndir
+        run: flutter pub get
+
+      - name: İkonları Oluştur
+        run: dart run flutter_launcher_icons
+
+      - name: Uygulamayı Derle (İmzasız)
+        run: flutter build ios --release --no-codesign
+
+      - name: Payload Klasörü Oluştur
+        run: mkdir Payload
+        
+      - name: Uygulamayı Payload içine taşı
+        run: mv build/ios/iphoneos/Runner.app Payload/
+
+      - name: IPA Dosyası Yap (Zip)
+        run: zip -r su_ic.ipa Payload
+
+      - name: IPA'yı Yükle (Artifact)
+        uses: actions/upload-artifact@v3
+        with:
+          name: su-ic-ios-app
+          path: su_ic.ipa
