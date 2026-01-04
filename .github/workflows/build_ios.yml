@@ -18,20 +18,18 @@ jobs:
       - name: Bağımlılıkları İndir
         run: flutter pub get
 
-      - name: Uygulamayı Derle (İmzasız)
-        run: flutter build ios --release --no-codesign
+      - name: Uygulamayı Derle
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app .
+          cd ..
+          zip -r su_ic.ipa Payload
 
-      - name: Payload Klasörü Oluştur
-        run: mkdir Payload
-        
-      - name: Uygulamayı Payload içine taşı
-        run: mv build/ios/iphoneos/Runner.app Payload/
-
-      - name: IPA Dosyası Yap (Zip)
-        run: zip -r su_ic.ipa Payload
-
-      - name: IPA'yı Yükle (Artifact)
+      - name: IPA'yı Yükle
         uses: actions/upload-artifact@v4
         with:
           name: su-ic-ios-app
-          path: su_ic.ipa
+          path: build/ios/iphoneos/su_ic.ipa
